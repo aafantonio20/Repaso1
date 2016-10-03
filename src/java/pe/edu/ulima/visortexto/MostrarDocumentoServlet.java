@@ -31,25 +31,10 @@ public class MostrarDocumentoServlet extends HttpServlet {
         String titulo = req.getParameter("titulo");
         String contenido = req.getParameter("contenido");
         String tipo = req.getParameter("tipo");
-
-        if (tipo.equals("pdf")) {
-                     
-            resp.setContentType("application/pdf");
-            
-            ModoVisualizacionAdapter adapter = new PDFAdapter();
-            ByteArrayOutputStream baos = adapter.renderizar(titulo, contenido);
-            
-
-            baos.writeTo(resp.getOutputStream());
-            resp.getOutputStream().flush();
-        } else if (tipo.equals("html")) {
-            ModoVisualizacionAdapter adapter = new HTMLAdapter();
-            ByteArrayOutputStream baos = adapter.renderizar(titulo, contenido);
-            baos.writeTo(resp.getOutputStream());
-            resp.getOutputStream().flush();
-        }
-
-    }
-
-   
+        ModoVisualizarFactory factory = new ModoVisualizarFactory();
+        ModoVisualizacionAdapter adapter = factory.obtenerAdapter(tipo);
+        ByteArrayOutputStream baos = adapter.renderizar(titulo, contenido);
+        baos.writeTo(resp.getOutputStream());
+        resp.getOutputStream().flush();   
+    }   
 }
